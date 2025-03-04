@@ -1,69 +1,93 @@
 package com.example.gustavioandroidstudio.api;
 
 import com.google.gson.annotations.SerializedName;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
-public class Game {
-    @SerializedName("juegos")
-    private List<Juegos> juegos = new ArrayList<>();
+public class Game implements Serializable {
 
-    public List<Juegos> getJuegos() {
-        return juegos;
+    @SerializedName("id")
+    private int id;
+
+    @SerializedName("name")
+    private String name;
+
+    @SerializedName("summary") // Descripción breve del juego
+    private String summary;
+
+    @SerializedName("genres") // IGDB devuelve una lista de IDs de géneros
+    private List<Integer> genres;
+
+    @SerializedName("release_dates") // Lista de fechas de lanzamiento
+    private List<ReleaseDate> releaseDates;
+
+    @SerializedName("cover") // Objeto anidado para la imagen de portada
+    private Cover cover;
+
+    // ✅ Getters con manejo de datos nulos
+    public int getId() {
+        return id;
     }
 
-    public static class Juegos {
-        @SerializedName("id")
-        private int id;
+    public String getName() {
+        return name != null ? name : "Nombre no disponible";
+    }
 
-        @SerializedName("name")
-        private String name;
+    public String getSummary() {
+        return summary != null ? summary : "Sin descripción";
+    }
 
-        @SerializedName("description")
-        private String description;
+    public List<Integer> getGenres() {
+        return genres;
+    }
 
-        @SerializedName("desarrollador")
-        private String desarrollador;
+    public String getFormattedGenres() {
+        if (genres == null || genres.isEmpty()) return "Sin género disponible";
+        return genres.toString(); // Devuelve los IDs como string por ahora
+    }
 
-        @SerializedName("genero")
-        private String genero;
+    public List<ReleaseDate> getReleaseDates() {
+        return releaseDates;
+    }
 
-        @SerializedName("release_date") // Asegurar que coincide con la API
-        private String releaseDate;
-
-        @SerializedName("image_url") // Asegurar que coincide con la API
-        private String imageUrl;
-
-        // Constructor vacío necesario para Retrofit
-        public Juegos() {}
-
-        // Getters
-        public int getId() {
-            return id;
+    public String getFirstReleaseDate() {
+        if (releaseDates != null && !releaseDates.isEmpty()) {
+            for (ReleaseDate date : releaseDates) {
+                if (date.getHumanDate() != null) {
+                    return date.getHumanDate();
+                }
+            }
         }
+        return "Fecha no disponible";
+    }
 
-        public String getName() {
-            return name;
+    public Cover getCover() {
+        return cover;
+    }
+
+    public String getCoverUrl() {
+        return (cover != null && cover.getUrl() != null)
+                ? cover.getUrl().replace("t_thumb", "t_cover_big")
+                : null;
+    }
+
+    // 📌 MODELO PARA LA PORTADA DEL JUEGO
+    public static class Cover implements Serializable {
+        @SerializedName("url")
+        private String url;
+
+        public String getUrl() {
+            return url;
         }
+    }
 
-        public String getDescription() {
-            return description;
-        }
+    // 📌 MODELO PARA LAS FECHAS DE LANZAMIENTO
+    public static class ReleaseDate implements Serializable {
+        @SerializedName("human") // Fecha en formato legible
+        private String humanDate;
 
-        public String getDesarrollador() {
-            return desarrollador;
-        }
-
-        public String getGenero() {
-            return genero;
-        }
-
-        public String getReleaseDate() {
-            return releaseDate;
-        }
-
-        public String getImageUrl() {
-            return imageUrl;
+        public String getHumanDate() {
+            return humanDate;
         }
     }
 }

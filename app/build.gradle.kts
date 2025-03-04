@@ -42,6 +42,9 @@ dependencies {
     implementation (libs.gson)
         implementation (libs.github.glide)
         annotationProcessor (libs.glide.compiler)
+
+        implementation (libs.recyclerview) // ✅ Última versión estable
+
     implementation (libs.logging.interceptor)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

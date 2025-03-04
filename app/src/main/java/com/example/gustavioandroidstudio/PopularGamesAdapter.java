@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.gustavioandroidstudio.R;
 import com.example.gustavioandroidstudio.api.Game;
 
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ import java.util.List;
 public class PopularGamesAdapter extends RecyclerView.Adapter<PopularGamesAdapter.ViewHolder> {
 
     private final Context context;
-    private List<Game.Juegos> juegosOriginales; // Lista original de juegos
-    private List<Game.Juegos> juegosFiltrados; // Lista que se muestra en el RecyclerView
+    private List<Game> juegosOriginales; // Lista completa de juegos
+    private List<Game> juegosFiltrados; // Lista de juegos filtrados
     private final OnGameClickListener onGameClickListener;
 
     public PopularGamesAdapter(Context context, List<Game> juegos, OnGameClickListener listener) {
@@ -38,12 +39,19 @@ public class PopularGamesAdapter extends RecyclerView.Adapter<PopularGamesAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Game.Juegos game = juegosFiltrados.get(position); // Usa la lista filtrada
-        holder.gameTitle.setText(game.getName()); // Accede correctamente a getName()
+        Game game = juegosFiltrados.get(position); // Usa la lista filtrada
+        holder.gameTitle.setText(game.getName()); // Accede correctamente al nombre del juego
+
+        // Obtiene la URL de la imagen de portada en alta calidad (t_cover_big)
+        String imageUrl = game.getCover() != null ?
+                game.getCover().getUrl().replace("t_thumb", "t_cover_big") :
+                null;
 
         // Cargar la imagen desde la URL usando Glide
         Glide.with(holder.itemView.getContext())
-                .load(game.getImageUrl()) // Ahora accede correctamente a la URL de la imagen
+                .load(imageUrl)
+                .placeholder(R.drawable.logo) // Imagen de carga
+                .error(R.drawable.logo) // Imagen en caso de error
                 .into(holder.gameImage);
 
         holder.itemView.setOnClickListener(v -> onGameClickListener.onGameClick(game));
@@ -66,18 +74,19 @@ public class PopularGamesAdapter extends RecyclerView.Adapter<PopularGamesAdapte
     }
 
     public interface OnGameClickListener {
-        void onGameClick(Game.Juegos game);
+        void onGameClick(Game game);
     }
 
+    // Método para filtrar los juegos por nombre
     public void filtrar(String texto) {
         juegosFiltrados.clear(); // Limpia la lista filtrada
 
         if (texto.isEmpty()) {
             juegosFiltrados.addAll(juegosOriginales); // Restaura todos los juegos si no hay texto
         } else {
-            for (Game.Juegos game : juegosOriginales) {
-                if (game.getName().toLowerCase().contains(texto.toLowerCase())) { // Accede correctamente al nombre
-                    juegosFiltrados.add(game); // Agrega solo los juegos que coinciden
+            for (Game game : juegosOriginales) {
+                if (game.getName().toLowerCase().contains(texto.toLowerCase())) { // Coincidencia parcial
+                    juegosFiltrados.add(game);
                 }
             }
         }

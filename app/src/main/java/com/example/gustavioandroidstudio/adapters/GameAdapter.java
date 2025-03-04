@@ -18,10 +18,11 @@ import java.util.List;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
     private final Context context;
-    private final List<Game.Juegos> videojuegos;
+    private final List<Game> videojuegos;
     private final OnItemClickListener onItemClickListener;
 
-    public GameAdapter(Context context, List<Game.Juegos> videojuegos, OnItemClickListener onItemClickListener) {
+    // ✅ Se recibe el Contexto y el OnItemClickListener en el constructor
+    public GameAdapter(Context context, List<Game> videojuegos, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.videojuegos = videojuegos;
         this.onItemClickListener = onItemClickListener;
@@ -30,22 +31,32 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.popular_game_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.popular_game_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Game.Juegos videojuego = videojuegos.get(position);
+        Game videojuego = videojuegos.get(position);
         holder.textViewNombre.setText(videojuego.getName());
 
+        // ✅ Se maneja la imagen correctamente para evitar fallos
+        String imageUrl = videojuego.getCover() != null ?
+                videojuego.getCover().getUrl().replace("t_thumb", "t_cover_big") :
+                null;
+
         Glide.with(context)
-                .load(videojuego.getImageUrl())
+                .load(imageUrl)
                 .placeholder(R.drawable.logo) // Imagen de carga
                 .error(R.drawable.logo) // Imagen en caso de error
                 .into(holder.imageView);
 
-        holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(videojuego));
+        // ✅ Se verifica que OnItemClickListener no sea null antes de ejecutarlo
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(videojuego);
+            }
+        });
     }
 
     @Override
@@ -65,6 +76,6 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Game.Juegos videojuego);
+        void onItemClick(Game videojuego);
     }
 }

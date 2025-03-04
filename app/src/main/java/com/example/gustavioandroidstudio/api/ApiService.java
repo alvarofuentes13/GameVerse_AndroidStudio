@@ -1,10 +1,16 @@
 package com.example.gustavioandroidstudio.api;
 
 import java.util.List;
+import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.GET;
+import retrofit2.http.Body;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
 
 public interface ApiService {
-    @GET("videojuegos.php")  // Debe coincidir con el endpoint de tu API en Spring Boot
-    Call<Game> getVideojuegos();  // Cambié el nombre del método
+    @Headers({
+            "Accept: application/json"
+    })
+    @POST("games")
+    Call<List<Game>> getVideojuegos(@Body RequestBody query); // ✅ Debe recibir `RequestBody`
 }
