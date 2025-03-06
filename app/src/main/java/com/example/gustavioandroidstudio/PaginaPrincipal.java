@@ -29,11 +29,11 @@ public class PaginaPrincipal extends AppCompatActivity {
 
         // Configurar el RecyclerView
         RecyclerView juegosRecyclerView = findViewById(R.id.popularGamesRecycler);
-        juegosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        juegosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         // Inicializar Retrofit
         apiService = ApiClient.getClient().create(ApiService.class);
-        String query = "fields name,summary,cover.url; limit 20;";
+        String query = "fields name,summary,cover.url; limit 5;";
         RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), query);
 
         // ✅ Llamada correcta a la API
@@ -44,15 +44,6 @@ public class PaginaPrincipal extends AppCompatActivity {
             public void onResponse(Call<List<Game>> call, Response<List<Game>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Game> juegosList = response.body(); // ✅ Obtener la lista de juegos correctamente
-
-                    for (Game juego : juegosList) {
-                        Log.d("API_RESPONSE", "ID: " + juego.getId() +
-                                ", Nombre: " + juego.getName() +
-                                ", Descripción: " + juego.getSummary() +
-                                ", Género: " + juego.getGenres() +
-                                ", Fecha de lanzamiento: " + juego.getFirstReleaseDate() +
-                                ", Imagen: " + juego.getCoverUrl());
-                    }
 
                     // ✅ Configurar el adaptador y mostrar los juegos en RecyclerView
                     gameAdapter = new GameAdapter(PaginaPrincipal.this, juegosList, game -> {

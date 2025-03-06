@@ -11,7 +11,7 @@ import java.io.IOException;
 public class ApiClient {
     private static final String BASE_URL = "https://api.igdb.com/v4/";
     private static final String CLIENT_ID = "19mj5nfs06lbn6pmkeasqq0ugdjel6"; // ✅ Cambia esto por el correcto
-    private static final String AUTH_TOKEN = "45mjurmf9jdpuycok4nsu3mhchm0m0"; // ✅ Usa un token actualizado dinámicamente
+    private static final String AUTH_TOKEN = "5z7z8z1ca0ruzkciwqroyoqbrzv88m"; // ✅ Usa un token actualizado dinámicamente
 
     private static Retrofit retrofit = null;
 

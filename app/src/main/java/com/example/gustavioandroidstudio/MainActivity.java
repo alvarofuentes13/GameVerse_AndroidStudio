@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void fetchGames() {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        String query = "fields name,summary,cover.url; limit 20;";
+        String query = "fields name,summary,cover.url; limit 5;";
         RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), query);
         Call<List<Game>> call = apiService.getVideojuegos(requestBody);
 
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     // ✅ Pasar la lista de juegos a `PaginaPrincipal`
-                    Intent intent = new Intent(MainActivity.this, PaginaPrincipal.class);
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     intent.putExtra("games_list", (java.io.Serializable) games);
                     startActivity(intent);
                     finish(); // Cierra `MainActivity`

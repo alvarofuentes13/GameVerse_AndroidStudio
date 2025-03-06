@@ -13,6 +13,7 @@ import com.example.gustavioandroidstudio.PopularGamesAdapter;
 import com.example.gustavioandroidstudio.api.Game;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.view.MenuItem;
@@ -24,29 +25,25 @@ public class PaginaUsuario extends AppCompatActivity {
     private PopularGamesAdapter popularGamesAdapter;
     private List<Game> popularGames;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pagina_usuario);
 
-        /* Inicializa los datos
-        popularGames = new ArrayList<>();
-        popularGames.add(new Game("GTA V", R.drawable.gta_v));
-        popularGames.add(new Game("Cyberpunk 2077", R.drawable.cyberpunk));
-        popularGames.add(new Game("Red Dead Redemption 2", R.drawable.red_dead));
-        popularGames.add(new Game("The Witcher 3", R.drawable.witcher_3));
-*/
+        // Inicializa la lista (vacía por ahora, o puedes llenarla con datos)
+        popularGames = new ArrayList<>();  // Asegúrate de que esta lista no sea null
+
         // Configura el RecyclerView
         popularGamesRecycler = findViewById(R.id.recyclerViewGames);
         popularGamesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+        // Inicializa el adaptador con la lista no nula
         popularGamesAdapter = new PopularGamesAdapter(this, popularGames, game -> {
             Toast.makeText(this, "Peor que el overcooked", Toast.LENGTH_SHORT).show();
         });
         popularGamesRecycler.setAdapter(popularGamesAdapter);
 
-// Inicializa el BottomNavigationView
+        // Inicializa el BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -61,14 +58,9 @@ public class PaginaUsuario extends AppCompatActivity {
                     Intent intent = new Intent(PaginaUsuario.this, BuscarJuegosActivity.class);
                     startActivity(intent);
                     return true;
-                } else if (itemId == R.id.nav_profile) {
-                    Intent intent = new Intent(PaginaUsuario.this, PaginaUsuario.class);
-                    startActivity(intent);
-                    return true;
                 }
                 return false;
             }
         });
-
     }
 }
