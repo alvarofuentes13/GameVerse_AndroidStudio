@@ -9,6 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.gustavioandroidstudio.api.ApiClient;
+
 public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,17 +27,18 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         btnRegistrarse.setOnClickListener(view -> {
-            String usuario = etUsuario.getText().toString().trim();
-            String email = etEmail.getText().toString().trim();
-            String contrasena = etContrasena.getText().toString().trim();
 
-            if (usuario.isEmpty() || email.isEmpty() || contrasena.isEmpty()) {
-                Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-            }
+            String jsonUsuario = "{"
+                    + "\"email\":\"camilo@gmail.com\","
+                    + "\"name\":\"Álvaro\","
+                    + "\"password\":\"1234\","
+                    + "\"fechaRegistro\":\"2025-03-06T12:17:22\","
+                    + "\"avatar\":null,"
+                    + "\"biografia\":\"Me gustan los videojuegos\""
+                    + "}";
+
+            ApiClient.registrarUsuario(jsonUsuario);
+            Toast.makeText(this, "Usuario registrado", Toast.LENGTH_SHORT).show();
         });
 
         tvIniciarSesion.setOnClickListener(view -> {

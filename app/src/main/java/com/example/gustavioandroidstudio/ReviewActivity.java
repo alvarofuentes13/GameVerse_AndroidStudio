@@ -2,6 +2,7 @@ package com.example.gustavioandroidstudio;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,8 +17,12 @@ import com.bumptech.glide.Glide;
 import com.example.gustavioandroidstudio.api.ApiClient;
 import com.example.gustavioandroidstudio.api.ApiService;
 import com.example.gustavioandroidstudio.api.Game;
+import com.example.gustavioandroidstudio.api.Review;
+import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -31,7 +36,6 @@ public class ReviewActivity extends AppCompatActivity {
     private TextView gameTitle, gameYear, gameDescription;
     private RatingBar ratingBar;
     private EditText reviewText;
-    private Button submitButton;
     private ApiService apiService;
     private int gameId;
 
@@ -46,7 +50,7 @@ public class ReviewActivity extends AppCompatActivity {
         gameDescription = findViewById(R.id.gameDescription);
         ratingBar = findViewById(R.id.ratingBar);
         reviewText = findViewById(R.id.reviewText);
-        submitButton = findViewById(R.id.submitButton);
+        Button submitButton = findViewById(R.id.submitButton);
 
         // Obtener el ID del juego desde el Intent
         gameId = getIntent().getIntExtra("GAME_ID", -1);
@@ -65,11 +69,14 @@ public class ReviewActivity extends AppCompatActivity {
         // Llamar a la API para obtener los detalles del juego
         obtenerDetallesJuego(gameId);
 
-        submitButton.setOnClickListener(view -> {
-            String review = reviewText.getText().toString();
-            float rating = ratingBar.getRating();
-            Toast.makeText(this, "Reseña enviada: " + review + " con " + rating + " estrellas", Toast.LENGTH_SHORT).show();
-            finish();
+        submitButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                String review = reviewText.getText().toString();
+                float rating = ratingBar.getRating();
+                enviarResenha(gameId, review, rating);
+            }
         });
     }
 
@@ -107,6 +114,40 @@ public class ReviewActivity extends AppCompatActivity {
             public void onFailure(Call<List<Game>> call, Throwable t) {
                 Log.e("API_ERROR", "Error al obtener datos del juego", t);
                 Toast.makeText(ReviewActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void enviarResenha(int gameId, String review, float rating) {
+        Map<String, Object> reviewData = new HashMap<>();
+        reviewData.put("gameId", gameId);
+        reviewData.put("review", review);
+        reviewData.put("rating", rating);
+
+        Log.d("RESEÑA INFO: ", reviewData.toString());
+
+        RequestBody requestBody = RequestBody.create(
+                MediaType.parse("application/json"),
+                new Gson().toJson(reviewData)
+        );
+
+        apiService.createReview(requestBody).enqueue(new Callback<Review>() {
+            @Override
+            public void onResponse(Call<Review> call, Response<Review> response) {
+                if (response.isSuccessful()) {
+                    // La reseña se creó correctamente
+                    Toast.makeText(ReviewActivity.this, "Reseña enviada", Toast.LENGTH_SHORT).show();
+                    finish(); // Cerrar la actividad
+                } else {
+                    // Hubo un error al crear la reseña
+                    Toast.makeText(ReviewActivity.this, "Error al enviar la reseña", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Review> call, Throwable t) {
+                // Hubo un error de red o de procesamiento
+                Toast.makeText(ReviewActivity.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
