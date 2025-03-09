@@ -52,6 +52,15 @@
                 android:text="Año"
                 android:textColor="#AAAAAA"
                 android:textSize="14sp"/>
+            <TextView
+                android:id="@+id/gameDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descripción del juego"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:paddingTop="5dp"/>
+
         </LinearLayout>
     </LinearLayout>
 
@@ -82,7 +91,11 @@
         android:textColor="@android:color/white"
         android:hint="Escribe aquí"
         android:padding="12dp"
-        android:textSize="14sp"/>
+        android:textSize="15sp"
+        android:gravity="top|start"
+        android:minLines="5"
+        android:inputType="textMultiLine"
+        android:scrollbars="vertical"/>
 
     <!-- Botón de enviar -->
     <Button

@@ -36,19 +36,18 @@ public class PaginaPrincipal extends AppCompatActivity {
         String query = "fields name,summary,cover.url; limit 5;";
         RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), query);
 
-        // ✅ Llamada correcta a la API
+        // Llamada a la API
         Call<List<Game>> call = apiService.getVideojuegos(requestBody);
-
-        call.enqueue(new Callback<List<Game>>() { // ✅ Cambiar de Game a List<Game>
+        call.enqueue(new Callback<List<Game>>() {
             @Override
             public void onResponse(Call<List<Game>> call, Response<List<Game>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Game> juegosList = response.body(); // ✅ Obtener la lista de juegos correctamente
+                    List<Game> juegosList = response.body();
 
-                    // ✅ Configurar el adaptador y mostrar los juegos en RecyclerView
+                    // Configurar el adaptador y mostrar los juegos en RecyclerView
                     gameAdapter = new GameAdapter(PaginaPrincipal.this, juegosList, game -> {
-                        Intent intent = new Intent(PaginaPrincipal.this, GamesActivity.class);
-                        intent.putExtra("game", game);
+                        Intent intent = new Intent(PaginaPrincipal.this, ReviewActivity.class);
+                        intent.putExtra("GAME_ID", game.getId()); // Pasar el ID del juego
                         startActivity(intent);
                     });
                     juegosRecyclerView.setAdapter(gameAdapter);
@@ -63,7 +62,7 @@ public class PaginaPrincipal extends AppCompatActivity {
             }
         });
 
-        // ✅ Configurar BottomNavigationView correctamente
+        // Configurar BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -77,6 +76,6 @@ public class PaginaPrincipal extends AppCompatActivity {
                 return true;
             }
             return false;
-        });
-    }
+   });
+}
 }

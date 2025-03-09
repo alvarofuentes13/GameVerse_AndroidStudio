@@ -28,7 +28,7 @@ import retrofit2.Response;
 public class ReviewActivity extends AppCompatActivity {
 
     private ImageView gameImage;
-    private TextView gameTitle, gameYear;
+    private TextView gameTitle, gameYear, gameDescription;
     private RatingBar ratingBar;
     private EditText reviewText;
     private Button submitButton;
@@ -43,6 +43,7 @@ public class ReviewActivity extends AppCompatActivity {
         gameImage = findViewById(R.id.gameImage);
         gameTitle = findViewById(R.id.gameTitle);
         gameYear = findViewById(R.id.gameYear);
+        gameDescription = findViewById(R.id.gameDescription);
         ratingBar = findViewById(R.id.ratingBar);
         reviewText = findViewById(R.id.reviewText);
         submitButton = findViewById(R.id.submitButton);
@@ -85,6 +86,7 @@ public class ReviewActivity extends AppCompatActivity {
                     // Mostrar la información en la UI
                     gameTitle.setText(game.getName() != null ? game.getName() : "Título desconocido");
                     gameYear.setText(game.getFirstReleaseDate() != null ? game.getFirstReleaseDate() : "Fecha no disponible");
+                    gameDescription.setText(game.getSummary() != null ? game.getSummary() : "Sin descripción disponible");
 
                     if (game.getCoverUrl() != null && !game.getCoverUrl().isEmpty()) {
                         Glide.with(ReviewActivity.this)
