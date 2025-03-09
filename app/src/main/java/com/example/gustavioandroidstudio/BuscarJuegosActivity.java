@@ -36,21 +36,18 @@ public class BuscarJuegosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_buscar_juegos);
 
         EditText edtBuscar = findViewById(R.id.edtBuscar);
-        juegosRecyclerView = findViewById(R.id.recyclerBuscar); // ✅ ID corregido
+        juegosRecyclerView = findViewById(R.id.recyclerBuscar);
 
-        // Verificación de RecyclerView
         if (juegosRecyclerView == null) {
             Log.e("ERROR", "RecyclerView no encontrado en activity_buscar_juegos.xml");
-            return; // Evita crash si no se encuentra el RecyclerView
+            return;
         }
 
-        // Usamos GridLayoutManager con 3 columnas
         juegosRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         juegos = new ArrayList<>();
         apiService = ApiClient.getClient().create(ApiService.class);
 
-        // Petición API
         String query = "fields name,summary,cover.url; limit 500;";
         RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), query);
 
@@ -61,17 +58,29 @@ public class BuscarJuegosActivity extends AppCompatActivity {
                     juegos.clear();
                     juegos.addAll(response.body());
 
-                    // Si hay juegos disponibles
                     if (!juegos.isEmpty()) {
+                        // Modificado para abrir ReviewActivity con datos reales
                         popularGamesAdapter = new PopularGamesAdapter(BuscarJuegosActivity.this, juegos, game -> {
-                            Intent intent = new Intent(BuscarJuegosActivity.this, GamesActivity.class);
-                            intent.putExtra("game", game);
+                            // Verificar datos antes de enviarlos
+                            String gameTitle = (game.getName() != null) ? game.getName() : "Título desconocido";
+                            String gameYear = (game.getFirstReleaseDate() != null) ? game.getFirstReleaseDate() : "Fecha no disponible";
+                            String gameImageUrl = (game.getCoverUrl() != null) ? game.getCoverUrl() : "";
+
+                            // Log para verificar qué datos se están enviando
+                            Log.d("DEBUG", "Juego seleccionado: " + gameTitle);
+                            Log.d("DEBUG", "Fecha de lanzamiento: " + gameYear);
+                            Log.d("DEBUG", "URL de imagen: " + gameImageUrl);
+
+                            Intent intent = new Intent(BuscarJuegosActivity.this, ReviewActivity.class);
+                            intent.putExtra("GAME_TITLE", gameTitle);
+                            intent.putExtra("GAME_YEAR", gameYear);
+                            intent.putExtra("GAME_IMAGE_URL", gameImageUrl);
+
                             startActivity(intent);
                         });
                         juegosRecyclerView.setAdapter(popularGamesAdapter);
                     } else {
                         Log.e("API_RESPONSE", "La API no devolvió juegos.");
-                        // Mostrar un mensaje al usuario (podrías usar un Toast o algo similar)
                     }
                 } else {
                     Log.e("API_ERROR", "Error en la respuesta: " + response.errorBody());
@@ -81,11 +90,9 @@ public class BuscarJuegosActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Game>> call, Throwable t) {
                 Log.e("API_ERROR", "Error al obtener datos", t);
-                // Mostrar un mensaje de error al usuario si la solicitud falla
             }
         });
 
-        // Configuración del BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -103,7 +110,6 @@ public class BuscarJuegosActivity extends AppCompatActivity {
             return false;
         });
 
-        // Filtrado en tiempo real
         edtBuscar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}

@@ -22,21 +22,21 @@ public class GamesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
 
-        recyclerView = findViewById(R.id.recyclerViewGames); // Verifica que coincida con el XML
+        recyclerView = findViewById(R.id.recyclerViewGames);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Recibir la lista de juegos y verificar si está vacía
         List<Game> games = (List<Game>) getIntent().getSerializableExtra("games_list");
         if (games == null || games.isEmpty()) {
             Toast.makeText(this, "No se encontraron juegos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Configurar el adaptador correctamente con el listener para abrir detalles
+        // Modificado para abrir ReviewActivity en lugar de GameDetailActivity
         gameAdapter = new GameAdapter(this, games, game -> {
-            // Abrir GameDetailActivity para mostrar los detalles del juego
-            Intent intent = new Intent(GamesActivity.this, GameDetailActivity.class);
-            intent.putExtra("game", game);
+            Intent intent = new Intent(GamesActivity.this, ReviewActivity.class);
+            intent.putExtra("GAME_TITLE", game.getName());
+            intent.putExtra("GAME_YEAR", game.getFirstReleaseDate());
+            intent.putExtra("GAME_IMAGE", R.drawable.game_placeholder); // Sustituye con la imagen real si la tienes
             startActivity(intent);
         });
 

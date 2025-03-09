@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gustavioandroidstudio">
 
+    <!-- Permiso para acceso a Internet -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -10,10 +11,13 @@
         android:label=""
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
+        <!-- Pantalla de Review (reseñas) -->
         <activity
             android:name=".ReviewActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
+        <!-- Pantalla principal de la app -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,6 +28,7 @@
             </intent-filter>
         </activity>
 
+        <!-- Otras actividades registradas -->
         <activity
             android:name=".PaginaPrincipal"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -54,7 +59,6 @@
             android:name=".GameDetailActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="true"/>
-
 
     </application>
 

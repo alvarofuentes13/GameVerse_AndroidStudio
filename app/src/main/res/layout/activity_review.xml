@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:text="Escribe tu reseña"
         android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:textStyle="bold"/>
 
     <!-- Información del juego -->
     <LinearLayout
@@ -26,7 +27,8 @@
             android:id="@+id/gameImage"
             android:layout_width="100dp"
             android:layout_height="140dp"
-            android:src="@drawable/game_placeholder" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/game_placeholder"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -38,10 +40,10 @@
                 android:id="@+id/gameTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Titulo"
+                android:text="Título"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/gameYear"
@@ -49,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:text="Año"
                 android:textColor="#AAAAAA"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -60,7 +62,7 @@
         android:text="¿Qué valoración le das?"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:paddingTop="16dp" />
+        android:paddingTop="16dp"/>
 
     <RatingBar
         android:id="@+id/ratingBar"
@@ -69,7 +71,7 @@
         android:numStars="5"
         android:stepSize="1.0"
         android:rating="0"
-        android:paddingTop="8dp" />
+        android:paddingTop="8dp"/>
 
     <!-- Campo de texto -->
     <EditText
@@ -80,7 +82,7 @@
         android:textColor="@android:color/white"
         android:hint="Escribe aquí"
         android:padding="12dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"/>
 
     <!-- Botón de enviar -->
     <Button
@@ -92,6 +94,6 @@
         android:backgroundTint="#2196F3"
         android:textColor="@android:color/white"
         android:padding="10dp"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"/>
 
 </LinearLayout>
