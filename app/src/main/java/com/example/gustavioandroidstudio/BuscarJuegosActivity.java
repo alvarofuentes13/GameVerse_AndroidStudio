@@ -16,8 +16,10 @@ import com.example.gustavioandroidstudio.api.ApiClient;
 import com.example.gustavioandroidstudio.api.ApiService;
 import com.example.gustavioandroidstudio.api.Game;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -48,7 +50,8 @@ public class BuscarJuegosActivity extends AppCompatActivity {
         juegos = new ArrayList<>();
         apiService = ApiClient.getClient().create(ApiService.class);
 
-        String query = "fields name,summary,cover.url; limit 500;";
+        // 🔹 Consulta mejorada para obtener los juegos desde la API
+        String query = "fields id, name, summary, cover.url; limit 500;";
         RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), query);
 
         apiService.getVideojuegos(requestBody).enqueue(new Callback<List<Game>>() {
@@ -59,25 +62,17 @@ public class BuscarJuegosActivity extends AppCompatActivity {
                     juegos.addAll(response.body());
 
                     if (!juegos.isEmpty()) {
-                        // Modificado para abrir ReviewActivity con datos reales
+                        // 🔹 Se pasa SOLO el ID del juego a ReviewActivity
                         popularGamesAdapter = new PopularGamesAdapter(BuscarJuegosActivity.this, juegos, game -> {
-                            // Verificar datos antes de enviarlos
-                            String gameTitle = (game.getName() != null) ? game.getName() : "Título desconocido";
-                            String gameYear = (game.getFirstReleaseDate() != null) ? game.getFirstReleaseDate() : "Fecha no disponible";
-                            String gameImageUrl = (game.getCoverUrl() != null) ? game.getCoverUrl() : "";
+                            int gameId = game.getId(); // Obtener el ID del juego
 
-                            // Log para verificar qué datos se están enviando
-                            Log.d("DEBUG", "Juego seleccionado: " + gameTitle);
-                            Log.d("DEBUG", "Fecha de lanzamiento: " + gameYear);
-                            Log.d("DEBUG", "URL de imagen: " + gameImageUrl);
+                            Log.d("DEBUG", "Juego seleccionado - ID: " + gameId + ", Nombre: " + game.getName());
 
                             Intent intent = new Intent(BuscarJuegosActivity.this, ReviewActivity.class);
-                            intent.putExtra("GAME_TITLE", gameTitle);
-                            intent.putExtra("GAME_YEAR", gameYear);
-                            intent.putExtra("GAME_IMAGE_URL", gameImageUrl);
-
+                            intent.putExtra("GAME_ID", gameId);
                             startActivity(intent);
                         });
+
                         juegosRecyclerView.setAdapter(popularGamesAdapter);
                     } else {
                         Log.e("API_RESPONSE", "La API no devolvió juegos.");
@@ -93,6 +88,7 @@ public class BuscarJuegosActivity extends AppCompatActivity {
             }
         });
 
+        // 🔹 Manejo de navegación en la barra inferior
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -110,6 +106,7 @@ public class BuscarJuegosActivity extends AppCompatActivity {
             return false;
         });
 
+        // 🔹 Filtrado en tiempo real
         edtBuscar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}

@@ -8,9 +8,14 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface ApiService {
+
     @Headers({
             "Accept: application/json"
     })
     @POST("games")
-    Call<List<Game>> getVideojuegos(@Body RequestBody query); // ✅ Debe recibir `RequestBody`
+    Call<List<Game>> getVideojuegos(@Body RequestBody query); // ✅ Para obtener varios juegos
+
+    // 🔹 Nuevo método para obtener UN SOLO juego por ID
+    @POST("games")
+    Call<List<Game>> getJuegoPorId(@Body RequestBody query);
 }
